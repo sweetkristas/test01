@@ -1,0 +1,9 @@
+[submodule "nuklear"]
+	path = nuklear
+	url = https://github.com/vurtun/nuklear
+[submodule "eris"]
+	path = eris
+	url = https://github.com/fnuecke/eris
+[submodule "lua-primer"]
+	path = lua-primer
+	url = https://github.com/cbeck88/lua-primer
