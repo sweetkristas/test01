@@ -18,26 +18,14 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\stdafx.h" />
-    <ClInclude Include="..\src\targetver.h" />
-    <ClInclude Include="..\src\win_sfml_lib.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3348CDF2-8186-44C0-A7B5-301080C2D376}</ProjectGuid>
-    <Keyword>Win32Proj</Keyword>
-    <RootNamespace>test01</RootNamespace>
+    <ProjectGuid>{CCBDFAEF-5A3D-47BE-AAAE-7E417676D675}</ProjectGuid>
+    <RootNamespace>eris</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -47,20 +35,20 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -80,80 +68,111 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;NOMINMAX;SFML_STATIC;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Projects\test01\eris\src;C:\Projects\glew-2.0.0\include;C:\Projects\SFML-2.4.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Projects\glew-2.0.0\lib\Release\Win32;C:\Projects\SFML-2.4.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\eris\src\eris.h" />
+    <ClInclude Include="..\..\eris\src\lapi.h" />
+    <ClInclude Include="..\..\eris\src\lauxlib.h" />
+    <ClInclude Include="..\..\eris\src\lcode.h" />
+    <ClInclude Include="..\..\eris\src\lctype.h" />
+    <ClInclude Include="..\..\eris\src\ldebug.h" />
+    <ClInclude Include="..\..\eris\src\ldo.h" />
+    <ClInclude Include="..\..\eris\src\lfunc.h" />
+    <ClInclude Include="..\..\eris\src\lgc.h" />
+    <ClInclude Include="..\..\eris\src\llex.h" />
+    <ClInclude Include="..\..\eris\src\llimits.h" />
+    <ClInclude Include="..\..\eris\src\lmem.h" />
+    <ClInclude Include="..\..\eris\src\lobject.h" />
+    <ClInclude Include="..\..\eris\src\lopcodes.h" />
+    <ClInclude Include="..\..\eris\src\lparser.h" />
+    <ClInclude Include="..\..\eris\src\lstate.h" />
+    <ClInclude Include="..\..\eris\src\lstring.h" />
+    <ClInclude Include="..\..\eris\src\ltable.h" />
+    <ClInclude Include="..\..\eris\src\ltm.h" />
+    <ClInclude Include="..\..\eris\src\lua.h" />
+    <ClInclude Include="..\..\eris\src\lua.hpp" />
+    <ClInclude Include="..\..\eris\src\luaconf.h" />
+    <ClInclude Include="..\..\eris\src\lualib.h" />
+    <ClInclude Include="..\..\eris\src\lundump.h" />
+    <ClInclude Include="..\..\eris\src\lvm.h" />
+    <ClInclude Include="..\..\eris\src\lzio.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\eris\src\eris.c" />
+    <ClCompile Include="..\..\eris\src\lapi.c" />
+    <ClCompile Include="..\..\eris\src\lauxlib.c" />
+    <ClCompile Include="..\..\eris\src\lbaselib.c" />
+    <ClCompile Include="..\..\eris\src\lbitlib.c" />
+    <ClCompile Include="..\..\eris\src\lcode.c" />
+    <ClCompile Include="..\..\eris\src\lcorolib.c" />
+    <ClCompile Include="..\..\eris\src\lctype.c" />
+    <ClCompile Include="..\..\eris\src\ldblib.c" />
+    <ClCompile Include="..\..\eris\src\ldebug.c" />
+    <ClCompile Include="..\..\eris\src\ldo.c" />
+    <ClCompile Include="..\..\eris\src\ldump.c" />
+    <ClCompile Include="..\..\eris\src\lfunc.c" />
+    <ClCompile Include="..\..\eris\src\lgc.c" />
+    <ClCompile Include="..\..\eris\src\linit.c" />
+    <ClCompile Include="..\..\eris\src\liolib.c" />
+    <ClCompile Include="..\..\eris\src\llex.c" />
+    <ClCompile Include="..\..\eris\src\lmathlib.c" />
+    <ClCompile Include="..\..\eris\src\lmem.c" />
+    <ClCompile Include="..\..\eris\src\loadlib.c" />
+    <ClCompile Include="..\..\eris\src\lobject.c" />
+    <ClCompile Include="..\..\eris\src\lopcodes.c" />
+    <ClCompile Include="..\..\eris\src\loslib.c" />
+    <ClCompile Include="..\..\eris\src\lparser.c" />
+    <ClCompile Include="..\..\eris\src\lstate.c" />
+    <ClCompile Include="..\..\eris\src\lstring.c" />
+    <ClCompile Include="..\..\eris\src\lstrlib.c" />
+    <ClCompile Include="..\..\eris\src\ltable.c" />
+    <ClCompile Include="..\..\eris\src\ltablib.c" />
+    <ClCompile Include="..\..\eris\src\ltm.c" />
+    <ClCompile Include="..\..\eris\src\lundump.c" />
+    <ClCompile Include="..\..\eris\src\lvm.c" />
+    <ClCompile Include="..\..\eris\src\lzio.c" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
