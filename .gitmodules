@@ -4,3 +4,9 @@
 [submodule "eris"]
 	path = eris
 	url = https://github.com/fnuecke/eris
+[submodule "Box2D"]
+	path = Box2D
+	url = https://github.com/erincatto/Box2D
+[submodule "zlib"]
+	path = zlib
+	url = https://github.com/madler/zlib

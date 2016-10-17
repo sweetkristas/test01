@@ -52,6 +52,44 @@ void renderingThread(sf::Window* window)
 	}
 }
 
+const std::string g_script{
+	"-- script.lua\n"
+	"-- Receives a table, returns the sum of its components.\n"
+	"io.write(\"The table the script received has:\\n\");\n"
+"x = 0\n"
+"for i = 1, #foo do\n"
+"print(i, foo[i])\n"
+"x = x + foo[i]\n"
+"end\n"
+"io.write(\"Returning data back to C\\n\");\n"
+"return x\n"
+};
+
+int lua_test()
+{
+	lua_State *L;
+	L = luaL_newstate();
+	luaL_openlibs(L);
+	luaL_loadstring(L, g_script.c_str());
+	lua_newtable(L);
+	for(int n = 1; n <= 5; n++) {
+		lua_pushnumber(L, n);		// Push the table index
+		lua_pushnumber(L, n * 2);	// Push the cell value
+		lua_rawset(L, -3);			// Stores the pair in the table
+	}
+	lua_setglobal(L, "foo");
+	int result = lua_pcall(L, 0, LUA_MULTRET, 0);
+	if(result) {
+		std::cerr << "Failed to run script: " << lua_tostring(L, -1) << "\n";
+		return 0;
+	}
+	double sum = lua_tonumber(L, -1);
+	std::cout << "Script returned: " << sum << "\n";
+	lua_pop(L, 1);
+	lua_close(L);
+	return 1;
+}
+
 int main()
 {
 	sf::ContextSettings settings;
@@ -78,6 +116,8 @@ int main()
 	std::cout << "stencil bits:" << current_settings.stencilBits << std::endl;
 	std::cout << "antialiasing level:" << current_settings.antialiasingLevel << std::endl;
 	std::cout << "version:" << current_settings.majorVersion << "." << current_settings.minorVersion << std::endl;
+
+	lua_test();
 
 	sf::Thread thread(&renderingThread, &window);
 	thread.launch();

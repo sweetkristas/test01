@@ -31,5 +31,14 @@
 #    pragma comment(lib, "ogg.lib")
 
 #    pragma comment(lib, "glew32s.lib")
+
+#ifdef _DEBUG
+#    pragma comment(lib, "Debug/eris.lib")
+#    pragma comment(lib, "Debug/Box2D.lib")
+#else
+#    pragma comment(lib, "Release/eris.lib")
+#    pragma comment(lib, "Release/Box2D.lib")
+#endif // _DEBUG
+
 #endif // _MSC_VER
 
