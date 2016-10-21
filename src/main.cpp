@@ -2,6 +2,17 @@
 
 #include "win_sfml_lib.h"
 
+#define LOCAL_PI 3.1415926535897932384626433832795
+
+namespace 
+{
+	std::default_random_engine& get_random_engine()
+	{
+		std::random_device r;
+		static std::default_random_engine e1(r());
+		return e1;
+	}
+}
 
 void renderingThread(sf::Window* window)
 {
@@ -61,15 +72,147 @@ const std::string g_script{
 "print(i, foo[i])\n"
 "x = x + foo[i]\n"
 "end\n"
+"io.write(\"point_direction(0, 0, 3, 3) = \", point_direction(0,0,3,3),\"\\n\")\n"
+"io.write(\"point_distance(0, 0, 3, 3) = \", point_distance(0,0,3,3),\"\\n\")\n"
+"io.write(\"lengthdir_x(5, 30) = \", lengthdir_x(5, 30), \"\\n\")\n"
+"io.write(\"lengthdir_y(5, 30) = \", lengthdir_y(5, 30), \"\\n\")\n"
+"io.write(\"choose(1, 'c', 'a', 'b') = \", choose(1, 'c', 'a', 'b'), \"\\n\")\n"
+"io.write(\"random_range(5, 30) = \", random_range(5, 30), \"\\n\")\n"
 "io.write(\"Returning data back to C\\n\");\n"
 "return x\n"
 };
+
+static int l_point_direction(lua_State* L) 
+{
+	// get arguments
+	const double x1 = luaL_checknumber(L, 1);
+	const double y1 = luaL_checknumber(L, 2);
+	const double x2 = luaL_checknumber(L, 3);
+	const double y2 = luaL_checknumber(L, 4);
+	const double result = atan2(y2 - y1, x2 - x1) * 180 / LOCAL_PI;
+	// push result	
+	lua_pushnumber(L, result);
+	// number of results
+	return 1;
+}
+
+static int l_point_distance(lua_State* L) 
+{
+	// get arguments
+	const double x1 = luaL_checknumber(L, 1);
+	const double y1 = luaL_checknumber(L, 2);
+	const double x2 = luaL_checknumber(L, 3);
+	const double y2 = luaL_checknumber(L, 4);
+	const double dx = x2 - x1;
+	const double dy = y2 - y1;
+	// push result	
+	lua_pushnumber(L, std::sqrt(dx * dx + dy * dy));
+	// number of results
+	return 1;
+}
+
+static int l_dot_product(lua_State* L) 
+{
+	const double x1 = luaL_checknumber(L, 1);
+	const double y1 = luaL_checknumber(L, 2);
+	const double x2 = luaL_checknumber(L, 3);
+	const double y2 = luaL_checknumber(L, 4);
+	const double result = x1 * x2 + y1 * y2;
+	lua_pushnumber(L, result);
+	return 1;
+}
+
+static int l_lengthdir_x(lua_State* L) 
+{
+	const double len = luaL_checknumber(L, 1);
+	const double dir = luaL_checknumber(L, 2) * LOCAL_PI / 180.0;
+	const double result = len * std::cos(dir);
+	lua_pushnumber(L, result);
+	return 1;
+}
+
+static int l_lengthdir_y(lua_State* L) 
+{
+	const double len = luaL_checknumber(L, 1);
+	const double dir = luaL_checknumber(L, 2) * LOCAL_PI / 180.0;
+	const double result = len * std::sin(dir);
+	lua_pushnumber(L, result);
+	return 1;
+}
+
+static int l_choose(lua_State* L) 
+{
+	const int num_args = lua_gettop(L);
+	std::uniform_int_distribution<int> range(1, num_args);
+	const int choice = range(get_random_engine());
+	lua_pushvalue(L, choice);
+	return 1;
+}
+
+static int l_random_range(lua_State* L)
+{
+	const double r1 = luaL_checknumber(L, 1);
+	const double r2 = luaL_checknumber(L, 2);
+	std::uniform_real_distribution<double> range(r1, r2);
+	const double result = range(get_random_engine());
+	lua_pushnumber(L, result);
+	return 1;
+}
+
+static int l_irandom_range(lua_State* L)
+{
+	const int r1 = luaL_checkinteger(L, 1);
+	const int r2 = luaL_checkinteger(L, 2);
+	std::uniform_int_distribution<int> range(r1, r2);
+	const int result = range(get_random_engine());
+	lua_pushinteger(L, result);
+	return 1;
+}
+static int l_random(lua_State* L)
+{
+	const double upper_bound = luaL_checknumber(L, 1);
+	std::uniform_real_distribution<double> range(0, upper_bound);
+	const double result = range(get_random_engine());
+	lua_pushnumber(L, result);
+	return 1;
+}
+
+static int l_irandom(lua_State* L)
+{
+	const int upper_bound = luaL_checkinteger(L, 1);
+	std::uniform_int_distribution<int> range(0, upper_bound);
+	const int result = range(get_random_engine());
+	lua_pushinteger(L, result);
+	return 1;
+}
+
+static const struct luaL_Reg test_lib [] = 
+{
+	{"point_direction", l_point_direction},
+	{"point_distance", l_point_distance},
+	{"dot_product", l_dot_product},
+	{"lengthdir_x", l_lengthdir_x},
+	{"lengthdir_y", l_lengthdir_y},
+	{"choose", l_choose},
+	{"random_range", l_random_range},
+	{"irandom_range", l_irandom_range},
+	{"random", l_random},
+	{"irandom", l_irandom},
+	{NULL, NULL}
+};
+
 
 int lua_test()
 {
 	lua_State *L;
 	L = luaL_newstate();
 	luaL_openlibs(L);
+	
+	lua_pushglobaltable(L);
+	lua_pushvalue(L, -2);
+	luaL_setfuncs(L, test_lib, 1);
+	lua_pop(L, 1);
+
 	luaL_loadstring(L, g_script.c_str());
 	lua_newtable(L);
 	for(int n = 1; n <= 5; n++) {
@@ -130,6 +273,8 @@ int main()
 				running = false;
 			} else if(event.type == sf::Event::Resized) {
 				glViewport(0, 0, event.size.width, event.size.height);
+			} else if(event.type == sf::Event::KeyPressed) {
+				lua_test();
 			}
 		}
 	}
