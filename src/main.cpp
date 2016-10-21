@@ -2,7 +2,6 @@
 
 #include "win_sfml_lib.h"
 
-
 void renderingThread(sf::Window* window)
 {
 	// activate the window's context

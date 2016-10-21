@@ -14,7 +14,8 @@
 #include "SFML/OpenGL.hpp"
 
 #include "lua.hpp"
-extern "C" {
+extern "C" 
+{
 #include "eris.h"
 }
 
