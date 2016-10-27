@@ -207,6 +207,7 @@ int lua_test()
 	L = luaL_newstate();
 	luaL_openlibs(L);
 	
+	// Load the defined C functions into global table.
 	lua_pushglobaltable(L);
 	lua_pushvalue(L, -2);
 	luaL_setfuncs(L, test_lib, 1);
@@ -231,6 +232,68 @@ int lua_test()
 	lua_close(L);
 	return 1;
 }
+
+struct component;
+typedef std::vector<component*> component_list;
+
+class entity
+{
+public:
+	entity() : components_(registered_components_.size(), nullptr) {}
+	static size_t register_component(const std::string& name) {
+		auto res = registered_components_.size();
+		registered_components_.emplace_back(name);
+		return res;
+	}
+private:
+	component_list components_;
+	static std::vector<std::string> registered_components_;
+};
+
+std::vector<std::string> entity::registered_components_;
+
+struct component_registrar
+{
+	explicit component_registrar(const std::string& name) : id(entity::register_component(name)) {}
+	size_t id;
+};
+
+struct component
+{
+	virtual ~component();
+	unsigned id;
+};
+
+struct position : public component
+{
+	position() : x(0), y(0) {}
+	int x;
+	int y;	
+};
+component_registrar pos_component("position");
+
+struct velocity : public component
+{
+	velocity() : angle(0), speed(0), vspeed(0), hspeed(0) {}
+	float angle;
+	float speed;
+	// vspeed = speed * sin(angle) and is thus the vertical component of speed.
+	float vspeed;
+	// hspeed = speed * cos(angle) and is thus the horizontal component of speed.
+	float hspeed;
+};
+component_registrar vel_component("velocity");
+
+struct sprite : public component
+{
+	sprite() : sprite_id(0) {}
+	unsigned sprite_id;
+};
+
+class system
+{
+
+};
 
 int main()
 {
