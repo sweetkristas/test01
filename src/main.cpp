@@ -201,7 +201,7 @@ static const struct luaL_Reg test_lib [] =
 };
 
 
-int lua_test()
+/*int lua_test()
 {
 	lua_State *L;
 	L = luaL_newstate();
@@ -230,6 +230,48 @@ int lua_test()
 	std::cout << "Script returned: " << sum << "\n";
 	lua_pop(L, 1);
 	lua_close(L);
+	return 1;
+}*/
+std::string lua_file{"\
+	local component_from_lua = {\
+		attack_damage = 0,\
+		chance_to_hit = 100\
+	}\
+	register_component(\"component_from_lua\", component_from_lua)\
+"};
+
+int lua_test()
+{
+	LuaContext context;
+	context.writeFunction("register_component", [](const std::string& cname, const std::map<std::string, boost::variant<bool,int,std::string>>& table) {  
+		// XXX
+		std::cout << "component name: " << cname << "\n";
+		for(const auto& p : table) {
+			if (int* pi = boost::get<int>(&table)) {
+			}
+			bool* xx1 = boost::get<bool>(p.second);
+			int* xx2 = boost::get<int>(p.second);
+			std::string xx3 = boost::get<std::string>(p.second);
+
+			std::cout << "\t" << p.first << " : ";
+			if(xx1) {
+				std::cout << xx1 << "\n";
+			} else if(xx2) {
+			} else if(xx3) {
+			}
+		}
+	});
+
+	try {
+		context.executeCode(lua_file);
+	} catch(std::runtime_error& e) {
+		std::cerr << e.what();
+		return 0;
+	}
+
+	context.writeVariable("a", "hello");
+	auto s = context.readVariable<std::string>("a");
+	assert(s == "hello");
 	return 1;
 }
 

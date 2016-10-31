@@ -20,5 +20,7 @@ extern "C"
 #include "eris.h"
 }
 
+#include "LuaContext.hpp"
+
 
 // TODO: reference additional headers your program requires here
