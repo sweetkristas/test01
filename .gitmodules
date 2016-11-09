@@ -9,4 +9,4 @@
 	url = https://github.com/madler/zlib
 [submodule "luawrapper"]
 	path = luawrapper
-	url = git@github.com:ahupowerdns/luawrapper.git
+	url = git@github.com:sweetkristas/luawrapper.git
