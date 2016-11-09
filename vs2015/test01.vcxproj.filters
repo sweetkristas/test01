@@ -24,12 +24,21 @@
     <ClInclude Include="..\src\win_sfml_lib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\audio_fwd.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\locator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\locator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

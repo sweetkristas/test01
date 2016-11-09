@@ -33,6 +33,7 @@ public:
 			locator::release();
 		}
 	};
+
 private:
 	static audio_ptr audio_service_;
 };

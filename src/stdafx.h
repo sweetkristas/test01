@@ -15,12 +15,12 @@
 #include "SFML/OpenGL.hpp"
 
 #include "lua.hpp"
-extern "C" 
-{
-#include "eris.h"
+extern "C" {
+#	include "eris.h"
 }
 
 #include "LuaContext.hpp"
 
+#include "locator.hpp"
 
 // TODO: reference additional headers your program requires here

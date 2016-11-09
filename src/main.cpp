@@ -200,7 +200,6 @@ static const struct luaL_Reg test_lib [] =
 	{NULL, NULL}
 };
 
-
 /*int lua_test()
 {
 	lua_State *L;
@@ -232,49 +231,9 @@ static const struct luaL_Reg test_lib [] =
 	lua_close(L);
 	return 1;
 }*/
-std::string lua_file{"\
-	local component_from_lua = {\
-		attack_damage = 0,\
-		chance_to_hit = 100\
-	}\
-	register_component(\"component_from_lua\", component_from_lua)\
-"};
 
-int lua_test()
-{
-	LuaContext context;
-	context.writeFunction("register_component", [](const std::string& cname, const std::map<std::string, boost::variant<bool,int,std::string>>& table) {  
-		// XXX
-		std::cout << "component name: " << cname << "\n";
-		for(const auto& p : table) {
-			if (int* pi = boost::get<int>(&table)) {
-			}
-			bool* xx1 = boost::get<bool>(p.second);
-			int* xx2 = boost::get<int>(p.second);
-			std::string xx3 = boost::get<std::string>(p.second);
 
-			std::cout << "\t" << p.first << " : ";
-			if(xx1) {
-				std::cout << xx1 << "\n";
-			} else if(xx2) {
-			} else if(xx3) {
-			}
-		}
-	});
-
-	try {
-		context.executeCode(lua_file);
-	} catch(std::runtime_error& e) {
-		std::cerr << e.what();
-		return 0;
-	}
-
-	context.writeVariable("a", "hello");
-	auto s = context.readVariable<std::string>("a");
-	assert(s == "hello");
-	return 1;
-}
-
+//////////////////////////////////////////////////////////////////////////////
 struct component;
 typedef std::vector<component*> component_list;
 
@@ -302,7 +261,7 @@ struct component_registrar
 
 struct component
 {
-	virtual ~component();
+	virtual ~component() {}
 	unsigned id;
 };
 
@@ -332,10 +291,217 @@ struct sprite : public component
 	unsigned sprite_id;
 };
 
-class system
+struct lua_component : public component
 {
-
+	lua_component() : table() {}
+	std::map<std::string, boost::variant<bool,int,std::string>> table;
 };
+
+typedef std::vector<int> entity_list;
+
+class ecs_system
+{
+public:
+	virtual ~ecs_system() {}
+	virtual void start() {}
+	virtual void stop() {}
+	virtual void update(double t, const entity_list& elist) = 0;
+private:
+};
+
+class lua_system : public ecs_system
+{
+public:
+	explicit lua_system(std::function<void(double, std::vector<std::pair<int,int>>)> fn)
+		: fn_(fn)
+	{}
+private:
+	std::function<void(double, std::vector<std::pair<int,int>>)> fn_;
+	void update(double t, const entity_list& elist) override final
+	{
+		std::vector<std::pair<int, int>> new_elist(elist.size());
+		std::transform(elist.begin(), elist.end(), new_elist.begin(), [](int n){ return std::make_pair(n, n); });
+		fn_(t, new_elist);
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////////
+
+static double ex_point_direction(double x1, double y1, double x2, double y2) 
+{
+	return atan2(y2 - y1, x2 - x1) * 180 / LOCAL_PI;
+}
+
+static double ex_point_distance(double x1, double y1, double x2, double y2) 
+{
+	// get arguments
+	const double dx = x2 - x1;
+	const double dy = y2 - y1;
+	// push result	
+	return std::sqrt(dx * dx + dy * dy);
+}
+
+static double ex_dot_product(double x1, double y1, double x2, double y2) 
+{
+	return x1 * x2 + y1 * y2;
+}
+
+static double ex_lengthdir_x(double len, double dir) 
+{
+	return len * std::cos(dir * LOCAL_PI / 180.0);
+}
+
+static double ex_lengthdir_y(double len, double dir) 
+{
+	return len * std::sin(dir * LOCAL_PI / 180.0);
+}
+
+typedef typename boost::make_recursive_variant
+<
+	std::string,
+	double,
+	bool,
+	std::vector<std::pair<
+	boost::variant<std::string,double,bool>,
+	boost::recursive_variant_
+	>>
+	>::type
+	AnyValue;
+
+/*static AnyValue ex_choose() 
+{
+	int num_args = 0;
+	//const int num_args = lua_gettop(L);
+	std::uniform_int_distribution<int> range(1, num_args);
+	const int choice = range(get_random_engine());
+	//lua_pushvalue(L, choice);
+	//return 1;
+}*/
+
+static double ex_random_range(double r1, double r2)
+{
+	std::uniform_real_distribution<double> range(r1, r2);
+	return range(get_random_engine());
+}
+
+static int ex_irandom_range(int r1, int r2)
+{
+	std::uniform_int_distribution<int> range(r1, r2);
+	return range(get_random_engine());
+}
+static double ex_random(double upper_bound)
+{
+	std::uniform_real_distribution<double> range(0, upper_bound);
+	return range(get_random_engine());
+}
+
+static int ex_irandom(int upper_bound)
+{
+	std::uniform_int_distribution<int> range(0, upper_bound);
+	return range(get_random_engine());
+}
+
+std::string lua_file{"\
+	local component_from_lua = {\
+		attack_type = \"slash\",\
+		attack_damage = 0,\
+		chance_to_hit = 100\
+	}\
+	\
+	function lua_sys1(n, elist)\
+		io.write(\"n = \", n)\
+		for i = 1, #elist do\
+			print(i, elist[i])\
+		end\
+	end\
+	register_component(\"component_from_lua\", component_from_lua)\
+	register_system(\"lua_sys1\", lua_sys1)\
+"};
+
+int lua_test()
+{
+	LuaContext context;
+	context.writeFunction("register_component", [](const std::string& cname, const std::map<std::string, boost::variant<bool,int,std::string>>& table) {  
+		// XXX
+		component_registrar lua_comp(cname);
+		lua_component xxx;
+		xxx.table = table;
+
+		std::cout << "component name: " << cname << "\n";
+		for(const auto& p : table) {
+
+			switch(p.second.which()) {
+				case 0: {
+					bool pi = boost::get<bool>(p.second);
+					std::cout << "\t" << p.first << "(bool) : " << (pi ? true : false);
+					break;
+				}
+				case 1: {
+					int pi = boost::get<int>(p.second);
+					std::cout << "\t" << p.first << "(int) : " << pi;
+					break;
+				}
+				case 2: {
+					std::string pi = boost::get<std::string>(p.second);
+					std::cout << "\t" << p.first << "(str) : " << pi;
+					break;
+				}
+			}
+			std::cout << "\n";
+		}
+	});
+
+	typedef std::vector<std::unique_ptr<ecs_system>> system_list;
+	system_list active_system_list;
+
+	context.writeFunction("register_system", [&active_system_list](const std::string& cname, std::function<void(double, std::vector<std::pair<int,int>>)> fn) {  
+		// XXX
+		active_system_list.emplace_back(std::make_unique<lua_system>(fn));
+		std::cout << "XXX: active_system_list.size() = " << active_system_list.size() << "\n";
+	});
+
+	std::map<int, int> foo;
+	for(int i = 1; i != 6; ++i) {
+		foo[i] = i * 2;
+	}
+	context.writeVariable("foo", foo);
+
+	context.writeFunction("point_direction", ex_point_direction);
+	context.writeFunction("point_distance", ex_point_distance);
+	context.writeFunction("dot_product", ex_dot_product);
+	context.writeFunction("lengthdir_x", ex_lengthdir_x);
+	context.writeFunction("lengthdir_y", ex_lengthdir_y);
+	context.writeFunction("random_range", ex_random_range);
+	context.writeFunction("irandom_range", ex_irandom_range);
+	context.writeFunction("random", ex_random);
+	context.writeFunction("irandom", ex_irandom);
+
+	// Need to push the choose function on conventionally.
+	auto ls = context.state();
+	lua_pushcfunction(ls, l_choose);
+	lua_setglobal(ls, "choose");
+	
+
+	try {
+		context.executeCode(lua_file);
+		double sum = context.executeCode<double>(g_script);
+		std::cout << "Script returned: " << sum << "\n";
+	} catch(std::runtime_error& e) {
+		std::cerr << e.what();
+		return 0;
+	}
+
+	entity_list elist{ 1, 2, 3, 4, 5 };
+	for(auto& sys : active_system_list) {
+		sys->update(0.0, elist);
+	}
+
+
+	context.writeVariable("a", "hello");
+	auto s = context.readVariable<std::string>("a");
+	assert(s == "hello");
+	return 1;
+}
 
 int main()
 {
@@ -363,6 +529,8 @@ int main()
 	std::cout << "stencil bits:" << current_settings.stencilBits << std::endl;
 	std::cout << "antialiasing level:" << current_settings.antialiasingLevel << std::endl;
 	std::cout << "version:" << current_settings.majorVersion << "." << current_settings.minorVersion << std::endl;
+
+	locator::manager service_locator_manager;
 
 	lua_test();
 
