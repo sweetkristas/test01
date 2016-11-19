@@ -10,3 +10,7 @@
 [submodule "luawrapper"]
 	path = luawrapper
 	url = git@github.com:sweetkristas/luawrapper.git
+[submodule "luajit-2.0"]
+	path = luajit-2.0
+	url = http://luajit.org/git/luajit-2.0.git
+	branch = v2.1
