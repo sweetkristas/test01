@@ -14,3 +14,12 @@
 	path = luajit-2.0
 	url = http://luajit.org/git/luajit-2.0.git
 	branch = v2.1
+[submodule "imgui"]
+	path = imgui
+	url = https://github.com/ocornut/imgui
+[submodule "imgui-sfml"]
+	path = imgui-sfml
+	url = https://github.com/eliasdaler/imgui-sfml
+[submodule "imgui_lua_bindings"]
+	path = imgui_lua_bindings
+	url = git@github.com:patrickriordan/imgui_lua_bindings.git

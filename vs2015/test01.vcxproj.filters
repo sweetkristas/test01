@@ -30,6 +30,12 @@
     <ClInclude Include="..\src\locator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\imgui\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\imgui-sfml\imgui-SFML.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\main.cpp">
@@ -39,6 +45,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\locator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui-sfml\imgui-SFML.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

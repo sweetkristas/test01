@@ -13,21 +13,73 @@ namespace
 		return e1;
 	}
 }
-void renderingThread(sf::Window* window)
+
+void gl_render()
 {
-	// activate the window's context
-	window->setActive(true);
-
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
-
+	static bool init = false;
+	static GLuint VertexArrayID = -1;
+	static GLuint vertexbuffer = -1;
 	const std::vector<GLfloat> g_vertex_buffer_data{
 		-1.0f, -1.0f, 0.0f,
 		1.0f, -1.0f, 0.0f,
 		0.0f,  1.0f, 0.0f,
 	};
 
+
+	if(!init) {
+		glGenVertexArrays(1, &VertexArrayID);
+
+		// Generate 1 buffer, put the resulting identifier in vertexbuffer
+		glGenBuffers(1, &vertexbuffer);
+		// The following commands will talk about our 'vertexbuffer' buffer
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		// Give our vertices to OpenGL.
+		glBufferData(GL_ARRAY_BUFFER, g_vertex_buffer_data.size() * sizeof(GLfloat), g_vertex_buffer_data.data(), GL_STATIC_DRAW);
+
+		init = true;
+	}
+	glBindVertexArray(VertexArrayID);
+
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glVertexAttribPointer(
+		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		3,                  // size
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+	// Draw the triangle !
+	glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void renderingThread(sf::RenderWindow* window)
+{
+	// activate the window's context
+	window->setActive(true);
+
+	sf::Texture tex;
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("../data/fonts/UbuntuMono-R.ttf", 18);
+	//io.Fonts->GetTexDataAsRGBA32();
+
+	sf::Color bgColor;
+	float color[3]{ 0.f, 0.f, 0.f };
+
+	ImGui::SFML::Init(*window);
+
+	/*	
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+	*/
+
+	/*
 	// This will identify our vertex buffer
 	GLuint vertexbuffer;
 	// Generate 1 buffer, put the resulting identifier in vertexbuffer
@@ -36,9 +88,14 @@ void renderingThread(sf::Window* window)
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data.data(), GL_STATIC_DRAW);
+	*/
+	sf::CircleShape shape(100.f);
+	shape.setFillColor(sf::Color::Green);
 
+	sf::Clock deltaClock;
 	// the rendering loop
 	while(window->isOpen()) {
+		/*
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// draw...
 
@@ -56,6 +113,29 @@ void renderingThread(sf::Window* window)
 		// Draw the triangle !
 		glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
 		glDisableVertexAttribArray(0);
+		*/
+
+		ImGui::SFML::Update(*window, deltaClock.restart());
+		//ImGui::SetWindowFontScale(2.0f);
+		ImGui::Begin("Hello, world!");
+		ImGui::Button("Look at this pretty button");
+		if (ImGui::ColorEdit3("Background color", color)) {
+			// this code gets called if color value changes, so
+			// the background color is upgraded automatically!
+			bgColor.r = static_cast<sf::Uint8>(color[0] * 255.f);
+			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
+			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
+		}
+		ImGui::End();
+
+		window->clear(bgColor);
+		//window->draw(shape);
+
+		gl_render();
+		window->resetGLStates();
+
+
+		ImGui::Render();
 
 		// end the current frame -- this is a rendering function (it requires the context to be active)
 		window->display();
@@ -505,6 +585,10 @@ int lua_test()
 
 int main()
 {
+#if defined(_MSC_VER) && _WIN32_WINNT >= 0x0600
+	SetProcessDPIAware();
+#endif
+
 	sf::ContextSettings settings;
 	settings.depthBits = 24;
 	settings.stencilBits = 8;
@@ -512,8 +596,9 @@ int main()
 	settings.majorVersion = 3;
 	settings.minorVersion = 2;
 
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!", sf::Style::Default, settings);
+	sf::RenderWindow window(sf::VideoMode(1024, 768), "SFML works!", sf::Style::Default, settings);
 	window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(60);
 
 	GLenum err = glewInit();
 	if(err != GLEW_OK) {
@@ -540,6 +625,7 @@ int main()
 	bool running = true;
 	while(running)	{
 		sf::Event event;
+		ImGui::SFML::ProcessEvent(event);
 		while(window.pollEvent(event)) {
 			if(event.type == sf::Event::Closed) {
 				running = false;
@@ -551,6 +637,10 @@ int main()
 		}
 	}
 	window.close();
+
+	thread.wait();
+
+	ImGui::SFML::Shutdown();
 
 	return 0;
 }

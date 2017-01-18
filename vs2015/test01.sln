@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "eris", "eris\eris.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Box2D", "Box2D\Box2D.vcxproj", "{BEE51FFA-EC1B-4CFB-8FDF-D112F4DFA8FA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luajit", "luajit\luajit\luajit.vcxproj", "{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -45,6 +47,14 @@ Global
 		{BEE51FFA-EC1B-4CFB-8FDF-D112F4DFA8FA}.Release|x64.Build.0 = Release|x64
 		{BEE51FFA-EC1B-4CFB-8FDF-D112F4DFA8FA}.Release|x86.ActiveCfg = Release|Win32
 		{BEE51FFA-EC1B-4CFB-8FDF-D112F4DFA8FA}.Release|x86.Build.0 = Release|Win32
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Debug|x64.ActiveCfg = Debug|x64
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Debug|x64.Build.0 = Debug|x64
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Debug|x86.ActiveCfg = Debug|Win32
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Debug|x86.Build.0 = Debug|Win32
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Release|x64.ActiveCfg = Release|x64
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Release|x64.Build.0 = Release|x64
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Release|x86.ActiveCfg = Release|Win32
+		{CBEDE48E-63CD-4462-9B04-EF8B9CD00D8D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
