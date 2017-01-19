@@ -22,6 +22,7 @@
     <ClInclude Include="..\imgui-sfml\imgui-SFML.h" />
     <ClInclude Include="..\imgui\imgui.h" />
     <ClInclude Include="..\src\audio_fwd.hpp" />
+    <ClInclude Include="..\src\imgui-tabs.hpp" />
     <ClInclude Include="..\src\locator.hpp" />
     <ClInclude Include="..\src\stdafx.h" />
     <ClInclude Include="..\src\targetver.h" />
@@ -35,6 +36,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\imgui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\src\imgui-tabs.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\src\locator.cpp" />

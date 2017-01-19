@@ -126,6 +126,11 @@ void renderingThread(sf::RenderWindow* window)
 			bgColor.g = static_cast<sf::Uint8>(color[1] * 255.f);
 			bgColor.b = static_cast<sf::Uint8>(color[2] * 255.f);
 		}
+		static const char* tabNames[] = {"First tab","Second tab","Third tab"};
+		static int tabOrder[] = {0,1,2};
+		static int tabSelected = 0;
+		const bool tabChanged = ImGui::TabLabels(tabNames,sizeof(tabNames)/sizeof(tabNames[0]),tabSelected,tabOrder);
+		ImGui::Text("\nTab Page For Tab: \"%s\" here.\n",tabNames[tabSelected]);
 		ImGui::End();
 
 		window->clear(bgColor);
