@@ -7,9 +7,6 @@
 [submodule "zlib"]
 	path = zlib
 	url = https://github.com/madler/zlib
-[submodule "luawrapper"]
-	path = luawrapper
-	url = git@github.com:sweetkristas/luawrapper.git
 [submodule "luajit-2.0"]
 	path = luajit-2.0
 	url = http://luajit.org/git/luajit-2.0.git
@@ -23,3 +20,6 @@
 [submodule "imgui_lua_bindings"]
 	path = imgui_lua_bindings
 	url = git@github.com:patrickriordan/imgui_lua_bindings.git
+[submodule "luawrapper"]
+	path = luawrapper
+	url = git@github.com:sweetkristas/luawrapper.git
